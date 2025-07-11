@@ -1,13 +1,36 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Parcel Vanilla App</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <h1>Parcel Vanilla App</h1>
-    <p>Edit <code>src/index.html</code> to get started!</p>
+    <h1>Wheat simulator</h1>
+    <section>
+      <h2>Ressources</h2>
+      <ul id="ressource-list">
+        <li data-inventory data-ressource="wheat">Wheat</li>
+        <li data-inventory data-ressource="bread">Bread</li>
+      </ul>
+    </section>
+    <section>
+      <h2>Actions</h2>
+      <button data-action="plant" data-ressource="wheat">Plant wheat</button>
+      <button data-action="plant" data-ressource="parsnip">
+        Plant parsnip
+      </button>
+      <button data-action="harvest" data-ressource="wheat" disabled>
+        Harvest wheat
+      </button>
+      <button data-action="harvest" data-ressource="parsnip" disabled>
+        Harvest parsnip
+      </button>
+      <button data-action="craft" data-ressource="bread" disabled>
+        Make bread (2 blé)
+      </button>
+    </section>
+    <script type="module" src="app.ts"></script>
   </body>
 </html>

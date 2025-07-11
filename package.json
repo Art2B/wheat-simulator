@@ -7,7 +7,9 @@
     "start": "parcel",
     "build": "parcel build"
   },
-  "dependencies": {},
+  "dependencies": {
+    "uuid": "^11.1.0"
+  },
   "devDependencies": {
     "parcel": "^2.14.0"
   }
