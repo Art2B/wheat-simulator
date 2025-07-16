@@ -1,0 +1,9 @@
+{
+  "include": ["src/**/*"],
+  "compilerOptions": {
+    "module": "nodenext",
+    "target": "es2023",
+    "moduleResolution": "nodenext",
+    "strict": true
+  }
+}

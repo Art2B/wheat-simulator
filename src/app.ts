@@ -1,123 +1,19 @@
 import { v4 as uuid } from "uuid";
+import { createInventory } from "./Inventory";
+import { Ressources, RessourcesInformations } from "./Ressources";
+import { createFields, PlantAction } from "./typings/Fields";
 
-type PlantAction = {
-  id: string;
-  type: "plant";
-  ressource: string;
-  quantity: number;
-  ready: boolean;
-  start: () => number;
-};
-
-type Inventory = {
-  wheat: number;
-  parsnip: number;
-  bread: number;
-};
-
-window.inventory = {
-  wheat: 0,
-  parsnip: 0,
-  bread: 0,
-} as Inventory;
-
-window.fields = [];
-
-const CRAFTS = {
-  bread: {
-    ingredients: {
-      wheat: 2,
-    },
-  },
-};
-
-const checkCraft = (state: Inventory) => {
-  const breadCraftBtns = document.querySelectorAll<HTMLButtonElement>(
-    '[data-action="craft"][data-ressource="bread"]'
-  );
-
-  if (state.wheat >= 2) {
-    breadCraftBtns.forEach((el) => {
-      el.disabled = false;
-    });
-  } else {
-    breadCraftBtns.forEach((el) => {
-      el.disabled = true;
-    });
-  }
-};
-
-const inventoryProxy = {
-  set(obj, prop, value) {
-    obj[prop] = value;
-
-    const ressourceElements = document.querySelectorAll(
-      `[data-ressource="${prop}"][data-inventory]`
-    );
-
-    if (ressourceElements.length > 0) {
-      ressourceElements.forEach((el) => {
-        el.innerHTML = `${value} ${prop}`;
-      });
-    } else {
-      const newInventoryEl = document.createElement("li");
-      newInventoryEl.setAttribute("data-ressource", prop);
-      newInventoryEl.setAttribute("data-inventory", "");
-      newInventoryEl.innerText = `${value} ${prop}`;
-      document.querySelector("#ressource-list")?.appendChild(newInventoryEl);
-    }
-
-    checkCraft(obj);
-
-    return true;
-  },
-};
-
-const plantElementProxy = {
-  set(obj, prop, value) {
-    console.log("Single element changed", { obj, prop, value });
-
-    const harvestBtn = document.querySelector(
-      `[data-action="harvest"][data-ressource="${obj.ressource}"]`
-    ) as HTMLButtonElement;
-
-    obj[prop] = value;
-
-    if (obj.ready) {
-      console.log("Remove the disabled");
-      harvestBtn.disabled = false;
-    }
-
-    return true;
-  },
-};
-
-const fieldArrayValidator = {
-  set(obj, prop, value) {
-    console.log("Fields changed", { obj, prop, value });
-
-    if (value.type === "plant") {
-      obj[prop] = new Proxy(value, plantElementProxy);
-    } else {
-      obj[prop] = value;
-    }
-
-    if (obj.every((item) => !item.ready)) {
-      const harvestBtns = document.querySelectorAll<HTMLButtonElement>(
-        `[data-action="harvest"]`
-      );
-      harvestBtns.forEach((el) => (el.disabled = true));
-    }
-
-    return true;
-  },
-};
-
-const proxiedFields = new Proxy(window.fields, fieldArrayValidator);
-const proxiedInventory = new Proxy(window.inventory, inventoryProxy);
+window.$inventory = createInventory();
+window.$fields = createFields();
 
 class Actions {
-  static plant(ressource) {
+  private static actions: Record<string, (...args: any[]) => void> = {
+    plant: Actions.plant,
+    harvest: Actions.harvest,
+    craft: Actions.craft,
+  };
+
+  static plant(ressource: Ressources) {
     console.log("Must plant this: ", ressource);
     const id = uuid();
 
@@ -127,46 +23,64 @@ class Actions {
       ressource: ressource,
       quantity: 1,
       ready: false,
-      start: ((id) => {
+      start: ((id: string) => {
         return setTimeout(() => {
           console.log("ready for harvest", id);
-          const plantAction = proxiedFields.find((item) => item.id === id);
+          const plantAction = window.$fields.find((item) => item.id === id);
           if (plantAction) {
             plantAction.ready = true;
           }
-        }, 1000);
+        }, RessourcesInformations[ressource].baseCraftTime);
       }).bind(this, id),
     };
 
-    proxiedFields.push(data);
+    window.$fields.push(data);
     data.start();
   }
 
-  static harvest(ressource) {
+  static harvest(ressource: Ressources) {
     console.log("Must harvest this: ", ressource);
-    const toHarvest = proxiedFields.filter(
+    const toHarvest = window.$fields.filter(
       (item) => item.ready && item.ressource === ressource
     );
 
     toHarvest.forEach((item) => {
-      proxiedFields.splice(
-        proxiedFields.findIndex((i) => i.id === item.id),
+      window.$fields.splice(
+        window.$fields.findIndex((i) => i.id === item.id),
         1
       );
-      proxiedInventory[item.ressource] += item.quantity;
+      window.$inventory[item.ressource] += item.quantity;
     });
   }
 
-  static craft(ressource) {
+  static craft(ressource: Ressources) {
     console.log("Must craft this: ", ressource);
 
-    const ingredients = CRAFTS[ressource].ingredients;
+    const materials = RessourcesInformations[ressource].materials;
 
-    for (const [r, quantity] of Object.entries(ingredients)) {
-      proxiedInventory[r] -= quantity;
+    if (
+      !materials ||
+      !materials.every((m) => {
+        return window.$inventory[m.type] >= m.quantity;
+      })
+    ) {
+      return;
     }
 
-    proxiedInventory[ressource] += 1;
+    for (const material of materials) {
+      window.$inventory[material.type] -= material.quantity;
+    }
+
+    window.$inventory[ressource] += 1;
+  }
+
+  static callAction(actionName: string, ...rest) {
+    const action = Actions.actions[actionName];
+    if (action) {
+      action.call(Actions, ...rest);
+    } else {
+      console.error(`[Actions] Method: ${actionName} doesnt exist.`);
+    }
   }
 }
 
@@ -177,18 +91,15 @@ const handleButtonClick = (event: MouseEvent) => {
     (event.target as HTMLElement)?.dataset.ressource
   );
 
-  const action: string | undefined = (event.target as HTMLElement)?.dataset
-    .action;
+  const action: string | null = (event.target as HTMLElement)?.getAttribute(
+    "data-action"
+  );
 
   if (action) {
-    const actionMethod = Actions[action];
-
-    if (typeof actionMethod === "function") {
-      actionMethod.call(
-        Actions,
-        (event.target as HTMLElement)?.dataset.ressource
-      );
-    }
+    Actions.callAction(
+      action,
+      (event.target as HTMLElement)?.dataset.ressource
+    );
   }
 };
 
