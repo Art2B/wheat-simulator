@@ -6,3 +6,38 @@ html {
   justify-content: center;
   height: 100%;
 }
+
+.field {
+  --state: attr(data-state raw-string, "fallow");
+  --joy: indianred;
+  margin: 0.5rem;
+}
+
+.field-visual {
+  height: 30px;
+  width: 30px;
+}
+
+@container style(--state: "fallow") {
+  .field-visual {
+    background-color: brown;
+  }
+}
+
+@container style(--state: "seeding") {
+  .field-visual {
+    background-color: lightgreen;
+  }
+}
+
+@container style(--state: "growth") {
+  .field-visual {
+    background-color: green;
+  }
+}
+
+@container style(--state: "mature") {
+  .field-visual {
+    background-color: darkgreen;
+  }
+}

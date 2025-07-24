@@ -7,9 +7,9 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <h1>Wheat simulator</h1>
+    <h1>Simulator</h1>
     <section>
-      <h2>Ressources</h2>
+      <h2>Inventory</h2>
       <ul id="ressource-list">
         <li data-inventory="wheat">Wheat</li>
         <li data-inventory="bread">Bread</li>
@@ -31,6 +31,11 @@
         Make bread (2 blé)
       </button>
     </section>
+    <section>
+      <h2>Fields here</h2>
+      <div id="field-container"></div>
+    </section>
+    <script type="module" src="components/index.ts"></script>
     <script type="module" src="app.ts"></script>
   </body>
 </html>

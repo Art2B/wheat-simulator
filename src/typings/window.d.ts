@@ -1,5 +1,5 @@
+import { PlantAction } from "../Fields";
 import { Inventory } from "../Inventory";
-import { PlantAction } from "./Fields";
 
 declare global {
   interface Window {

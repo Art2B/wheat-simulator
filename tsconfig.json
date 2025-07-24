@@ -1,9 +1,14 @@
 {
   "include": ["src/**/*"],
   "compilerOptions": {
+    "jsx": "react",
+    "jsxFactory": "h",
     "module": "nodenext",
     "target": "es2023",
     "moduleResolution": "nodenext",
-    "strict": true
+    "strict": true,
+    "paths": {
+      "@libs/*": ["./libs/*"]
+    }
   }
 }

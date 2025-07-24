@@ -1,7 +1,7 @@
 import { v4 as uuid } from "uuid";
+import { createFields, Field, PlantAction } from "./Fields";
 import { createInventory } from "./Inventory";
 import { Ressources, RessourcesInformations } from "./Ressources";
-import { createFields, PlantAction } from "./typings/Fields";
 
 window.$inventory = createInventory();
 window.$fields = createFields();
@@ -106,3 +106,8 @@ const handleButtonClick = (event: MouseEvent) => {
 document.querySelectorAll("button").forEach((el) => {
   el.addEventListener("click", handleButtonClick);
 });
+
+const fieldContainer = document.querySelector("#field-container");
+if (fieldContainer) {
+  const myField = new Field(fieldContainer);
+}

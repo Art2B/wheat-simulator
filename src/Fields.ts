@@ -1,4 +1,4 @@
-import { Ressources } from "../Ressources";
+import { Ressources } from "./Ressources";
 
 export type PlantAction = {
   id: string;
@@ -8,6 +8,13 @@ export type PlantAction = {
   ready: boolean;
   start: () => number;
 };
+
+enum FieldStates {
+  fallow = "fallow",
+  seeding = "seeding",
+  growth = "growth",
+  mature = "mature",
+}
 
 const plantElementProxy = {
   set(obj, prop, value) {
@@ -54,3 +61,26 @@ export const createFields = () => {
 
   return new Proxy(fields, fieldArrayValidator);
 };
+
+export class Field {
+  element: HTMLElement;
+
+  constructor(container: Element) {
+    this.element = this.generateFieldElement(container);
+  }
+
+  private generateFieldElement(container: Element): HTMLElement {
+    const field = document.createElement("field-block");
+
+    // const field = document.createElement("div");
+    // field.classList.add("field");
+    // field.setAttribute("data-state", FieldStates.fallow);
+
+    // const visual = document.createElement("div");
+    // visual.classList.add("field-visual");
+
+    // field.appendChild(visual);
+    container.appendChild(field);
+    return field;
+  }
+}

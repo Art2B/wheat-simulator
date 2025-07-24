@@ -1,0 +1,34 @@
+/** @jsx h */
+
+type VirtualNode = {
+  nodeName: string;
+  attributes: Record<string, string>;
+  children: Element[];
+};
+
+// ^^^^ this tells a transpiler to inject calls to an `h()` function for each node.
+export function h(nodeName, attributes, ...args) {
+  console.log(...args);
+  if (typeof nodeName === "function") {
+    return nodeName();
+  }
+
+  let children = args.length ? [].concat(...args) : null;
+  return { nodeName, attributes, children };
+}
+
+export function render(vnode: VirtualNode | string) {
+  // If string, insert text in page.
+  if (typeof vnode === "string") {
+    return document.createTextNode(vnode);
+  }
+
+  // Create DOM element from VNode
+  const n = document.createElement(vnode.nodeName);
+  let a = vnode.attributes || {};
+  Object.entries(a).forEach(([name, value]) => n.setAttribute(name, value));
+
+  (vnode.children || []).forEach((c) => n.appendChild(render(c)));
+
+  return n;
+}
