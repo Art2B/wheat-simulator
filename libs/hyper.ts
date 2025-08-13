@@ -1,19 +1,22 @@
 /** @jsx h */
+// ^^^^ this tells a transpiler to inject calls to an `h()` function for each node.
 
 type VirtualNode = {
   nodeName: string;
   attributes: Record<string, string>;
-  children: Element[];
+  children: (string | VirtualNode)[];
 };
 
-// ^^^^ this tells a transpiler to inject calls to an `h()` function for each node.
-export function h(nodeName, attributes, ...args) {
-  console.log(...args);
+export function h(
+  nodeName: string | Function,
+  attributes: Record<string, string>,
+  ...args: (string | VirtualNode)[]
+) {
   if (typeof nodeName === "function") {
     return nodeName();
   }
 
-  let children = args.length ? [].concat(...args) : null;
+  let children = args.length ? [...args] : null;
   return { nodeName, attributes, children };
 }
 
