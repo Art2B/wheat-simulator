@@ -29,7 +29,9 @@ export function render(vnode: VirtualNode | string) {
   // Create DOM element from VNode
   const n = document.createElement(vnode.nodeName);
   let a = vnode.attributes || {};
-  Object.entries(a).forEach(([name, value]) => n.setAttribute(name, value));
+  Object.entries(a)
+    .filter(([name]) => !name.startsWith("__"))
+    .forEach(([name, value]) => n.setAttribute(name, value));
 
   (vnode.children || []).forEach((c) => n.appendChild(render(c)));
 

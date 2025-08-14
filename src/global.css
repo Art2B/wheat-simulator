@@ -1,0 +1,13 @@
+html {
+  color-scheme: light dark;
+  font-family: system-ui;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+field-block {
+  display: inline-block;
+  margin: 0.5rem;
+}

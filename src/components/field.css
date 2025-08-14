@@ -1,21 +1,24 @@
-html {
-  color-scheme: light dark;
-  font-family: system-ui;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-}
-
 .field {
   --state: attr(data-state raw-string, "fallow");
-  --joy: indianred;
-  margin: 0.5rem;
 }
 
 .field-visual {
   height: 30px;
   width: 30px;
+}
+
+.menu-button {
+  anchor-name: --menu-btn-anchor;
+  cursor: pointer;
+  border: none;
+  padding: 0;
+}
+
+.menu-popover {
+  position: absolute;
+  position-anchor: --menu-btn-anchor;
+  position-area: bottom center;
+  margin: 0.5rem;
 }
 
 @container style(--state: "fallow") {

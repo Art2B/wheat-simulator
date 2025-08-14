@@ -1,27 +1,35 @@
 import { h, render } from "@libs/hyper";
 
+import fieldCssText from "bundle-text:./field.css";
+
 const FieldBlocTemplate = () => {
   return (
-    <template id="field-block-template">
-      <div class="field" data-state="fallow">
+    <div class="field" data-state="fallow">
+      <button class="menu-button" id="menu-toggle" popovertarget="menu-actions">
         <div class="field-visual"></div>
+      </button>
+
+      <div class="menu-popover" id="menu-actions" popover="auto">
+        <slot name="actions"></slot>
       </div>
-    </template>
+    </div>
   );
 };
 
 export default class FieldBlock extends HTMLElement {
+  shadowRoot: ShadowRoot | null;
+
   constructor() {
     super();
 
-    const templateDOM = document.getElementById("field-block-template");
-    console.log(templateDOM);
-    if (templateDOM) {
-      const templateContent = templateDOM.content;
-      console.log(templateContent);
+    this.shadowRoot = this.attachShadow({ mode: "open" });
 
-      const shadowRoot = this.attachShadow({ mode: "open" });
-      shadowRoot.appendChild(templateContent.cloneNode(true));
+    const templateDOM = document.getElementById(
+      "field-block-template"
+    ) as HTMLTemplateElement | null;
+
+    if (templateDOM) {
+      this.shadowRoot.appendChild(templateDOM.content.cloneNode(true));
     }
   }
 
@@ -30,8 +38,19 @@ export default class FieldBlock extends HTMLElement {
   };
 
   static readonly injectTemplate = () => {
+    const template = document.createElement("template");
+    template.setAttribute("id", "field-block-template");
+
+    // inject <style> tag
+    let style = document.createElement("style");
+    style.textContent = fieldCssText;
+    template.content.appendChild(style);
+
+    // Inject template DOM
     const dom = render(FieldBlocTemplate());
-    document.body.appendChild(dom);
+    template.content.appendChild(dom);
+
+    document.body.appendChild(template);
   };
 
   connectedCallback() {
@@ -51,6 +70,8 @@ export default class FieldBlock extends HTMLElement {
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
-    console.log(`Attribute ${name} has changed.`);
+    console.log(
+      `Attribute ${name} has changed. from ${oldValue} to ${newValue}`
+    );
   }
 }

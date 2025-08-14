@@ -67,20 +67,22 @@ export class Field {
 
   constructor(container: Element) {
     this.element = this.generateFieldElement(container);
+
+    this.setActions();
   }
 
   private generateFieldElement(container: Element): HTMLElement {
     const field = document.createElement("field-block");
-
-    // const field = document.createElement("div");
-    // field.classList.add("field");
-    // field.setAttribute("data-state", FieldStates.fallow);
-
-    // const visual = document.createElement("div");
-    // visual.classList.add("field-visual");
-
-    // field.appendChild(visual);
     container.appendChild(field);
     return field;
+  }
+
+  private setActions() {
+    const actionsContainer = document.createElement("div");
+    actionsContainer.setAttribute("slot", "actions");
+
+    actionsContainer.innerHTML = `<button>Plant wheat</button>`;
+
+    this.element.appendChild(actionsContainer);
   }
 }
