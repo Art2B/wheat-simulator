@@ -1,6 +1,6 @@
 import { h, render } from "@libs/hyper";
 
-import fieldCssText from "bundle-text:./field.css";
+import * as fieldCssText from "bundle-text:./field.css";
 
 const FieldBlockTemplate = () => {
   return (
