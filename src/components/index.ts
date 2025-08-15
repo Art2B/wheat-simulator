@@ -1,4 +1,4 @@
-import FieldBlock from "./FieldBlock";
+import FieldBlock from "./Field/FieldBlock";
 
 FieldBlock.define();
 FieldBlock.injectTemplate();

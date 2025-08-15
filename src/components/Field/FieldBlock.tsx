@@ -2,7 +2,7 @@ import { h, render } from "@libs/hyper";
 
 import fieldCssText from "bundle-text:./field.css";
 
-const FieldBlocTemplate = () => {
+const FieldBlockTemplate = () => {
   return (
     <div class="field" data-state="fallow">
       <button class="menu-button" id="menu-toggle" popovertarget="menu-actions">
@@ -17,7 +17,9 @@ const FieldBlocTemplate = () => {
 };
 
 export default class FieldBlock extends HTMLElement {
-  shadowRoot: ShadowRoot | null;
+  shadowRoot: ShadowRoot;
+
+  static observedAttributes = ["data-state"];
 
   constructor() {
     super();
@@ -47,7 +49,7 @@ export default class FieldBlock extends HTMLElement {
     template.content.appendChild(style);
 
     // Inject template DOM
-    const dom = render(FieldBlocTemplate());
+    const dom = render(FieldBlockTemplate());
     template.content.appendChild(dom);
 
     document.body.appendChild(template);
@@ -69,9 +71,10 @@ export default class FieldBlock extends HTMLElement {
     console.log("Custom element moved to new page.");
   }
 
-  attributeChangedCallback(name, oldValue, newValue) {
-    console.log(
-      `Attribute ${name} has changed. from ${oldValue} to ${newValue}`
-    );
+  attributeChangedCallback(name: string, oldValue: string, newValue: string) {
+    const field = this.shadowRoot.querySelector(".field") as HTMLElement;
+    if (name === "data-state" && field) {
+      field.dataset.state = newValue;
+    }
   }
 }
