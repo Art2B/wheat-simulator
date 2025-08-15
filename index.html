@@ -1,28 +1,23 @@
-<!DOCTYPE html><html lang=en><meta charset=utf-8><meta name=viewport content="width=device-width, initial-scale=1.0"><title>Parcel Vanilla App</title><link rel=stylesheet href=https://art2b.github.io/wheat-simulator/wheat-simulator.c5bb4bdb.css><body>
-    <h1>Wheat simulator</h1>
+<!DOCTYPE html><html lang=en><meta charset=utf-8><meta name=viewport content="width=device-width, initial-scale=1.0"><title>Parcel Vanilla App</title><link rel=stylesheet href=https://art2b.github.io/wheat-simulator/wheat-simulator.38a2e3f4.css><body>
+    <h1>Simulator</h1>
     <section>
-      <h2>Ressources</h2>
+      <h2>Inventory</h2>
       <ul id=ressource-list>
-        <li data-inventory data-ressource=wheat>Wheat</li>
-        <li data-inventory data-ressource=bread>Bread</li>
+        <li data-inventory=wheat>Wheat</li>
+        <li data-inventory=bread>Bread</li>
       </ul>
     </section>
     <section>
       <h2>Actions</h2>
-      <button data-action=plant data-ressource=wheat>Plant wheat</button>
-      <button data-action=plant data-ressource=parsnip>
-        Plant parsnip
-      </button>
-      <button data-action=harvest data-ressource=wheat disabled>
-        Harvest wheat
-      </button>
-      <button data-action=harvest data-ressource=parsnip disabled>
-        Harvest parsnip
-      </button>
       <button data-action=craft data-ressource=bread disabled>
         Make bread (2 blé)
       </button>
     </section>
-    <script type=module src=https://art2b.github.io/wheat-simulator/wheat-simulator.489e7f4a.js></script>
+    <section>
+      <h2>Fields here</h2>
+      <div id=field-container></div>
+    </section>
+    <script type=module src=https://art2b.github.io/wheat-simulator/wheat-simulator.c60d15f3.js></script>
+    <script type=module src=https://art2b.github.io/wheat-simulator/wheat-simulator.b1ca83ed.js></script>
   
 
