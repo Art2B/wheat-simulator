@@ -1,4 +1,5 @@
 import {
+  FarmableRessourcesInformations,
   RessourceHelpers,
   Ressources,
   RessourcesInformations,
@@ -61,12 +62,7 @@ export class Field {
     this.actionsContainer.innerHTML = "";
 
     if (this.state === FieldStates.fallow) {
-      this.actionsContainer.innerHTML = `<button data-action="plant" data-ressource="wheat">Plant wheat</button>`;
-      this.actionsContainer
-        .querySelectorAll('button[data-action="plant"]')
-        .forEach((el) => {
-          el.addEventListener("click", this.handleActionPlant.bind(this));
-        });
+      this.generatePlantButtons();
     } else if (
       this.state === FieldStates.growth ||
       this.state === FieldStates.seeding
@@ -80,6 +76,20 @@ export class Field {
           el.addEventListener("click", this.handleHarvest.bind(this));
         });
     }
+  }
+
+  private generatePlantButtons() {
+    Object.keys(FarmableRessourcesInformations)
+      .map((key) => RessourceHelpers.getRessourceFromString(key))
+      .filter((ressource) => !!ressource)
+      .forEach((ressource) => {
+        const button = document.createElement("button");
+        button.dataset.action = "plant";
+        button.dataset.ressource = ressource;
+        button.textContent = `Plant ${ressource}`;
+        button.addEventListener("click", this.handleActionPlant.bind(this));
+        this.actionsContainer.appendChild(button);
+      });
   }
 
   private handleActionPlant(e: Event) {

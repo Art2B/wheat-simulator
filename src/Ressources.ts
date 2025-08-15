@@ -84,3 +84,16 @@ export const CraftableRessourcesInformations: Partial<RessourcesInformationsColl
       }
       return acc;
     }, {});
+
+export const FarmableRessourcesInformations: Partial<RessourcesInformationsCollection> =
+  Object.entries(RessourcesInformations)
+    .filter(([key]) => {
+      return RessourceHelpers.isPlantableRessource(key);
+    })
+    .reduce<Partial<RessourcesInformationsCollection>>((acc, [key, value]) => {
+      const ressource = RessourceHelpers.getRessourceFromString(key);
+      if (ressource) {
+        acc[ressource] = value;
+      }
+      return acc;
+    }, {});
